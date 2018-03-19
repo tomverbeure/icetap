@@ -20,7 +20,7 @@ all: elf
 #LDSCRIPT = ../Src/sdk_flash.ld
 MCU	= STM32L433xx
 ASM	= startup_stm32l433xx.s
-LDSCRIPT = ../Src/blackice_flash.ld
+LDSCRIPT = blackice_flash.ld
 
 # select ARM architecture
 ARCH	= -mcpu=cortex-m3

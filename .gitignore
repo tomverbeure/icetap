@@ -1,2 +1,4 @@
 *.o
 *.raw
+firmware/icehub/output
+tags
