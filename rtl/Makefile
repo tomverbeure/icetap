@@ -1,20 +1,19 @@
-###############################################################################
-#                                                                             #
-# Copyright 2016 myStorm Copyright and related                                #
-# rights are licensed under the Solderpad Hardware License, Version 0.51      #
-# (the “License”); you may not use this file except in compliance with        #
-# the License. You may obtain a copy of the License at                        #
-# http://solderpad.org/licenses/SHL-0.51. Unless required by applicable       #
-# law or agreed to in writing, software, hardware and materials               #
-# distributed under this License is distributed on an “AS IS” BASIS,          #
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or             #
-# implied. See the License for the specific language governing                #
-# permissions and limitations under the License.                              #
-#                                                                             #
-###############################################################################
 
-VERILOG_FILES = top.v uart_tx.v sync_reset.v sync_dd_c.v
+
+ICETAP_DESIGN_FILES = sync_pulse.v sync_reset.v sync_dd_c.v icetap.v icetap_spi.v icetap_top.v
+ICETAP_TB_FILES	= icetap_tb.v uart_tx.v
+
+VERILOG_FILES = top.v uart_tx.v sync_reset.v sync_dd_c.v icetap.v icetap_top.v
+
 PCF_FILE = blackice-ii.pcf
+
+output/icetap_tb: $(ICETAP_TB_FILES) $(ICETAP_DESIGN_FILES)
+	mkdir -p output
+	iverilog -o output/icetap_tb $(ICETAP_TB_FILES) $(ICETAP_DESIGN_FILES)
+
+sim: output/icetap_tb
+	./output/icetap_tb
+
 
 output/chip.bin: output/chip.blif
 	arachne-pnr -d 8k -P tq144:4k -p $(PCF_FILE) output/chip.blif -o output/chip.txt
@@ -39,13 +38,6 @@ flash:
 run:
 	stty -F /dev/ttyUSB0 115200 raw -echo
 	cat /dev/ttyUSB0
-
-output/tb: tb.v $(VERILOG_FILES)
-	mkdir -p output
-	iverilog -o output/tb tb.v $(VERILOG_FILES)
-
-sim: output/tb
-	./output/tb
 
 help:
 	@echo "Makefile options:"

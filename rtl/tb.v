@@ -33,11 +33,34 @@ module tb();
 	wire uart_rx;
 	wire uart_tx;
 
-	top u_top(
-		.CLK_OSC100(clk),
-		.UART_RX(uart_rx),
-		.UART_TX(uart_tx)
-	);
+	top u_top
+		(
+		 .CLK_OSC100		(clk),
+		 .UART_RX		(uart_rx),
+		 .UART_TX		(uart_tx),
+
+`ifdef SRAM
+		 .RAMOE			(RAMOE),
+		 .RAMWE			(RAMWE),
+		 .RAMCS			(RAMCS),
+		 .RAMLB			(RAMLB),
+		 .RAMUB			(RAMUB),
+		 .ADR			(ADR[17:0]),
+		 .DAT			(DAT[15:0]),
+`endif
+
+		/*AUTOINST*/
+		 // Outputs
+		 .LED1			(LED1),
+		 .LED2			(LED2),
+		 .LED3			(LED3),
+		 .LED4			(LED4),
+		 // Inputs
+		 .B1			(B1),
+		 .B2			(B2),
+		 .QSPICSN		(QSPICSN),
+		 .QSPICK		(QSPICK),
+		 .QSPIDQ		(QSPIDQ[3:0]));
 
 	reg tb_tx_req;
 	wire tb_tx_ready;
@@ -79,3 +102,6 @@ module tb();
 
 endmodule
 
+// Local Variables:
+// verilog-library-flags:("-f icetap.vc")
+// End:

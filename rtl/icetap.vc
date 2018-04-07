@@ -1,0 +1,6 @@
+-v icetap_top.v
+-v icetap.v
+-v top.v 
+-v uart_tx.v 
+-v sync_reset.v 
+-v sync_dd_c.v 
