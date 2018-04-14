@@ -79,6 +79,7 @@ LIB	= $(OUTPUT_DIR)/drivers.a
 # toolchain definitions
 CC	= arm-none-eabi-gcc
 AR	= arm-none-eabi-ar
+GDB	= arm-none-eabi-gdb
 
 CPPFLAGS	= -D$(MCU) $(INCLUDE)
 
@@ -145,3 +146,6 @@ oflash: elf
 
 dfu: raw
 	dfu-util -s 0x08000000:leave -a 0 -D $(OUTPUT_DIR)/$(TARGET).raw -t 1024
+
+gdb:
+	$(GDB) 

@@ -47,9 +47,9 @@ module icetap_scan
 		input [RAM_ADDR_BITS-1:0]	trigger_addr, 
 		input [RAM_ADDR_BITS-1:0]	stop_addr,
 
-		output	 			signals_out_req,
-		input				signals_out_ready,
-		input [NR_SIGNALS-1:0]		signals_out
+		output 				read_req_first,
+		output				read_req_next,
+		input [NR_SIGNALS-1:0] 		read_data
 		/*AUTOARG*/);
 
 	localparam RAM_ADDR_BITS = $clog2(RECORD_DEPTH);
@@ -122,30 +122,78 @@ module icetap_scan
 	assign status_vec = { start_addr, trigger_addr, stop_addr, state };
 
 	reg [7:0] status_scan_reg;
-	reg [5:0] bit_cntr;
+	reg [5:0] status_bit_cntr;
 	always @(posedge scan_clk) begin
 		if (!scan_reset_) begin
 			status_scan_reg <= 0;
-			bit_cntr	<= 1;
+			status_bit_cntr	<= 1;
 		end
 		else if (status_shift_update) begin
 			status_scan_reg	<= status_vec[7:0];
-			bit_cntr <= 1;
+			status_bit_cntr <= 1;
 		end
 		else if (status_shift_ena) begin
-			bit_cntr 	<= bit_cntr + 1;
-			if (bit_cntr[2:0] != 0) begin
+			status_bit_cntr 	<= status_bit_cntr + 1;
+			if (status_bit_cntr[2:0] != 0) begin
 				status_scan_reg <= { status_scan_reg[6:0], 1'b0 };
 			end
 			else begin
-				status_scan_reg <= (bit_cntr[5:3] == 1) ? status_vec[15:8]  : 
-				                   (bit_cntr[5:3] == 2) ? status_vec[31:16] : 
-				                   (bit_cntr[5:3] == 3) ? status_vec[47:32] : 0;
+				status_scan_reg <= (status_bit_cntr[5:3] == 1) ? status_vec[15:8]  : 
+				                   (status_bit_cntr[5:3] == 2) ? status_vec[31:16] : 
+				                   (status_bit_cntr[5:3] == 3) ? status_vec[47:32] : 0;
 			end
 		end
 	end
 
 	assign status_shift_data = status_scan_reg[7];
+
+	//============================================================
+	// DATA
+	//============================================================
+
+
+	localparam NR_DATA_BYTES = (NR_SIGNALS+7)/8;
+	reg [NR_DATA_BYTES*8-1:0] data_vec;
+	assign data_vec = read_data;
+
+	localparam DATA_BIT_CNTR_BITS = $clog2(NR_DATA_BYTES*8);
+
+	reg [DATA_BIT_CNTR_BITS-1:0] data_bit_cntr, data_bit_cntr_nxt;
+
+	integer i;
+	reg [7:0] data_scan_reg, data_scan_reg_nxt;
+	always @(*) begin
+		data_scan_reg_nxt = read_data;
+		
+		for(i=1;i<NR_DATA_BYTES;i=i+1) begin
+			if (data_bit_cntr[DATA_BIT_CNTR_BITS-1:3] == i) begin
+				data_scan_reg_nxt = data_vec[i*8+7:i*8];
+			end
+		end
+	end
+
+	assign read_req_first = data_shift_update;
+
+	reg read_req_next;
+	reg data_scan_reg_update;
+	always @(*) begin
+		read_req_next <= 1'b0;
+		data_scan_reg_update <= 1'b0;
+
+		if (data_shift_update) begin
+			data_bit_cntr_nxt <= 0;
+		end
+		else if (data_shift_ena) begin
+			if (data_bit_cntr[DATA_BIT_CNTR_BITS-1:3] != NR_DATA_BYTES) begin
+				data_bit_cntr_nxt <= data_bit_cntr + 1;
+			end
+			else begin
+				data_bit_cntr_nxt <= 0;
+				read_req_next <= 1'b1;
+			end
+		end
+	end
+	
 
 	// SRC_CLK clock domain
 
@@ -208,9 +256,12 @@ module icetap_bram
 		output [RAM_ADDR_BITS-1:0]	trigger_addr,
 		output [RAM_ADDR_BITS-1:0]	stop_addr,
 
-		input                   	signals_out_req,
-		output                  	signals_out_ready,
-		output [NR_SIGNALS-1:0] 	signals_out
+		input 				scan_clk,
+		input 				scan_reset_,
+
+		input                   	read_req_first,
+		output                  	read_req_next,
+		output [NR_SIGNALS-1:0] 	read_data
 	/*AUTOARG*/);
 
 	localparam RAM_ADDR_BITS = $clog2(RECORD_DEPTH);
@@ -391,5 +442,72 @@ module icetap_bram
 	wire [1:0] state;
 	assign state = cur_state;
 
+	reg [RAM_ADDR_BITS-1:0]	rd_addr;
+
+	assign rd_ena = 1'b1;
+	always @(posedge scan_clk) begin
+		if (!scan_reset_) begin
+			rd_addr <= 0;
+		end
+		else if (read_req_first) begin
+			rd_addr	<= 0;
+		end
+		else if (read_req_next) begin
+			rd_addr	<= rd_addr + 1;
+		end
+	end
+
+	icetap_mem
+	#(
+		.ADDR_WIDTH(RAM_ADDR_BITS),
+		.DATA_WIDTH(NR_SIGNALS)
+	)
+	u_mem
+	(
+	 	.wr_clk			(src_clk),
+	 	.wr_ena			(store_req),
+	 	.wr_addr		(store_addr),
+	 	.wr_data		(store_data),
+
+	 	.rd_clk			(scan_clk),
+	 	.rd_ena			(rd_ena),
+	 	.rd_addr		(rd_addr),
+	 	.rd_data		(rd_data)
+	);
+
 endmodule
+
+
+module icetap_mem
+	#(
+		parameter ADDR_WIDTH = 8,
+		parameter DATA_WIDTH = 8
+	)(
+		input			wr_clk,
+		input 			wr_ena,
+		input [ADDR_WIDTH-1:0]	wr_addr,
+		input [DATA_WIDTH-1:0]	wr_data,
+		
+		input 			rd_clk,
+		input 			rd_ena,
+		input [ADDR_WIDTH-1:0]	rd_addr,
+		output [DATA_WIDTH-1:0]	rd_data
+	);
+
+	reg [DATA_WIDTH-1:0] mem[0:(2<<ADDR_WIDTH)-1];
+
+	always @(posedge wr_clk) begin
+		if (wr_ena) begin
+			mem[wr_addr] <= wr_data;
+		end
+	end
+
+	always @(posedge rd_clk) begin
+		if (rd_ena) begin
+			rd_data <= mem[rd_addr];
+		end
+	end
+
+endmodule
+
 
