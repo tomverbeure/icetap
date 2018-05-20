@@ -70,6 +70,9 @@ module icetap_top_jtag #(
             .tdi                            (tdi),
             .icetap_tdo                     (icetap_tdo),
 
+            .scan_n_ir                      (scan_n_ir),
+            .extest_ir                      (extest_ir),
+
             .capture_dr                     (capture_dr),
             .shift_dr                       (shift_dr),
             .update_dr                      (update_dr),

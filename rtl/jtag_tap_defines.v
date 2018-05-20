@@ -69,6 +69,8 @@
 `define SCAN_N          4'b0010
 `define EXTEST          4'b0011
 
+`define JTAG_SCAN_N_LENGTH      3
+
 `define JTAG_REG_VOID           3'd0
 `define JTAG_REG_CMD            3'd1
 `define JTAG_REG_STATUS         3'd2

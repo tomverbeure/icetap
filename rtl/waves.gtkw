@@ -1,17 +1,19 @@
 [*]
 [*] GTKWave Analyzer v3.3.90 (w)1999-2018 BSI
-[*] Sun May 20 04:03:01 2018
+[*] Sun May 20 04:39:28 2018
 [*]
 [dumpfile] "/home/tom/projects/icetap/rtl/output/waves.vcd"
-[dumpfile_mtime] "Sun May 20 04:02:37 2018"
-[dumpfile_size] 1139137
+[dumpfile_mtime] "Sun May 20 04:39:12 2018"
+[dumpfile_size] 291151
 [savefile] "/home/tom/projects/icetap/rtl/waves.gtkw"
-[timestart] 0
+[timestart] 15308000
 [size] 1655 971
 [pos] -1 -1
-*-22.721867 940000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-20.721867 20440000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] icetap_tb.
 [treeopen] icetap_tb.u_jtag_icetap.
+[treeopen] icetap_tb.u_jtag_icetap.u_icetap_top_jtag.
+[treeopen] icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.
 [sst_width] 384
 [signals_width] 374
 [sst_expanded] 1
@@ -21,9 +23,7 @@ icetap_tb.trst_
 icetap_tb.tck
 icetap_tb.tdi
 icetap_tb.tdo
-@29
 icetap_tb.tdo_oe
-@28
 icetap_tb.tms
 @200
 -
@@ -32,9 +32,34 @@ icetap_tb.u_jtag_icetap.u_jtag_tap.state_text[1023:0]
 @200
 -
 @28
-icetap_tb.clk
-icetap_tb.reset_
+icetap_tb.u_jtag_icetap.u_jtag_tap.update_ir
 @22
-icetap_tb.signals_in[7:0]
+icetap_tb.u_jtag_icetap.u_jtag_tap.latched_jtag_ir[3:0]
+@200
+-
+@28
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.tck
+icetap_tb.u_jtag_icetap.scan_n_ir
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.scan_n[2:0]
+@820
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.scan_n_text[1023:0]
+@200
+-
+@28
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.extest_ir
+@200
+-
+@28
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.store_mask_shift_data
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.store_mask_shift_ena
+@22
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.store_mask_vec[23:0]
+@200
+-
+@28
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.trigger_mask_shift_data
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.trigger_mask_shift_ena
+@22
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.trigger_mask_vec[23:0]
 [pattern_trace] 1
 [pattern_trace] 0

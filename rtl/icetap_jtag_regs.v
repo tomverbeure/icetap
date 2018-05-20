@@ -63,6 +63,19 @@ module icetap_jtag_regs
         end
     end
 
+    reg [1023:0] scan_n_text;
+    always @* begin
+        case(scan_n)
+            `JTAG_REG_VOID:         scan_n_text = "VOID";
+            `JTAG_REG_CMD:          scan_n_text = "CMD";
+            `JTAG_REG_STATUS:       scan_n_text = "STATUS";
+            `JTAG_REG_STORE_MASK:   scan_n_text = "STORE_MASK";
+            `JTAG_REG_TRIGGER_MASK: scan_n_text = "TRIGGER_MASK";
+            `JTAG_REG_DATA:         scan_n_text = "DATA";
+            default:                scan_n_text = "<UNKNOWN>";
+        endcase
+    end
+
     // COMMAND
     always @* begin
         if (extest_ir && scan_n == `JTAG_REG_CMD) begin

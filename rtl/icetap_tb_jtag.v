@@ -79,6 +79,23 @@ module icetap_tb();
 
 `include "jtag_tb_tasks.v"
 
+    task jtag_fetch_idcode;
+        begin
+            //============================================================
+            // Select IDCODE register
+            //============================================================
+            jtag_scan_ir(`IDCODE);
+            jtag_scan_dr(32'd0, 32, 1);
+        end
+    endtask
+
+    task jtag_set_scan_n;
+        input  [`JTAG_SCAN_N_LENGTH-1:0] register;
+        begin
+            jtag_scan_ir(`SCAN_N);
+            jtag_scan_dr(register, `JTAG_SCAN_N_LENGTH, 1);
+        end
+    endtask
 
     initial begin
         tck     = 0;
@@ -115,50 +132,31 @@ module icetap_tb();
 
         $display("%t: IDCODE scanned out: %x", $time, captured_tdo_vec[31:0]);
 
-        //============================================================
-        // Select IR 0xa
-        //============================================================
-        jtag_scan_ir(4'b1111);
-        jtag_scan_ir(4'ha);
+        jtag_scan_ir(`BYPASS);
 
         //============================================================
-        // Select IDCODE register
+        // Fetch IDCODE
         //============================================================
-        jtag_scan_ir(`IDCODE);
-        jtag_scan_dr(32'd0, 32, 1);
+        jtag_fetch_idcode;
 
         //============================================================
-        // GPIOs
+        // STORE_MASK
         //============================================================
-        // All GPIOs output
-        $display("CONFIG - SCAN_N");
-        jtag_scan_ir(`SCAN_N);
-        jtag_scan_dr(1'b0, 1, 0);
-        $display("CONFIG - EXTEST WR");
+        $display("store-mask");
+        jtag_set_scan_n(`JTAG_REG_STORE_MASK);
         jtag_scan_ir(`EXTEST);
-        jtag_scan_dr(4'b1111, 4, 0);
+        jtag_scan_dr(24'h000001, 24, 0);
 
-        // capture_dr without update_dr (to read back the value)
-        $display("CONFIG - EXTEST RD");
-        jtag_scan_dr(4'b0000, 4, 0);
-
-        // Set GPIO output values
-        $display("DATA - SCAN_N");
-        jtag_scan_ir(`SCAN_N);
-        jtag_scan_dr(1'b1, 1, 0);
-        $display("DATA - EXTEST");
+        //============================================================
+        // TRIGGER_MASK
+        //============================================================
+        $display("trigger-mask");
+        jtag_set_scan_n(`JTAG_REG_TRIGGER_MASK);
         jtag_scan_ir(`EXTEST);
+        jtag_scan_dr(24'h000048, 24, 0);
 
-        jtag_scan_dr(4'b1111, 4, 1);
-        jtag_scan_dr(4'b1000, 4, 0);
-        jtag_scan_dr(4'b1001, 4, 1);
-        jtag_scan_dr(4'b1010, 4, 0);
-        jtag_scan_dr(4'b1011, 4, 0);
-        jtag_scan_dr(4'b1100, 4, 0);
-        jtag_scan_dr(4'b1101, 4, 0);
-        jtag_scan_dr(4'b1110, 4, 0);
-        jtag_scan_dr(4'b1111, 4, 0);
-        jtag_scan_dr(4'b1000, 4, 0);
+        repeat(100) @(posedge clk);
+        $finish;
 
     end
 

@@ -74,7 +74,7 @@ module icetap_scan
     if (COMPLEX_STORE == 1) begin
         always @(posedge scan_clk) begin
             if (store_mask_shift_ena) begin
-                store_mask_vec <= { store_mask_vec, store_mask_shift_data };
+                store_mask_vec <= { store_mask_shift_data, store_mask_vec[NR_SIGNALS*3-1:1] };
                 end
         end
     end
@@ -90,7 +90,7 @@ module icetap_scan
     if (COMPLEX_TRIGGER == 1) begin
         always @(posedge scan_clk) begin
             if (trigger_mask_shift_ena) begin
-                trigger_mask_vec <= { trigger_mask_vec, trigger_mask_shift_data };
+                trigger_mask_vec <= { trigger_mask_shift_data, trigger_mask_vec[NR_SIGNALS*3-1:1] };
             end
         end
     end
@@ -111,7 +111,7 @@ module icetap_scan
         end
         else begin
             if (cmd_shift_ena) begin
-                cmd_shift_reg <= { cmd_shift_reg, cmd_shift_data };
+                cmd_shift_reg <= { cmd_shift_data, cmd_shift_reg };
             end
         end
     end
