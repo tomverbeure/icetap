@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.90 (w)1999-2018 BSI
-[*] Sun May 20 04:39:28 2018
+[*] Sun May 20 05:09:51 2018
 [*]
 [dumpfile] "/home/tom/projects/icetap/rtl/output/waves.vcd"
-[dumpfile_mtime] "Sun May 20 04:39:12 2018"
-[dumpfile_size] 291151
+[dumpfile_mtime] "Sun May 20 05:08:21 2018"
+[dumpfile_size] 358358
 [savefile] "/home/tom/projects/icetap/rtl/waves.gtkw"
-[timestart] 15308000
+[timestart] 25358400
 [size] 1655 971
 [pos] -1 -1
-*-20.721867 20440000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.721867 25475000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] icetap_tb.
 [treeopen] icetap_tb.u_jtag_icetap.
 [treeopen] icetap_tb.u_jtag_icetap.u_icetap_top_jtag.
@@ -25,6 +25,7 @@ icetap_tb.tdi
 icetap_tb.tdo
 icetap_tb.tdo_oe
 icetap_tb.tms
+icetap_tb.u_jtag_icetap.test_logic_reset
 @200
 -
 @820
@@ -61,5 +62,22 @@ icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.trigger_mask_shift_
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.trigger_mask_shift_ena
 @22
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.trigger_mask_vec[23:0]
+@200
+-
+@28
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.cmd_shift_ena
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.cmd_shift_data
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.cmd_shift_update
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.cmd_reg[2:0]
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.cmd_reg_sync[2:0]
+@200
+-
+@28
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.src_clk
+@29
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.start
+@28
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.trigger_always
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.store_always
 [pattern_trace] 1
 [pattern_trace] 0

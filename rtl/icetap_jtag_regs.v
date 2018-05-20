@@ -6,8 +6,6 @@ module icetap_jtag_regs
         parameter NR_SIGNALS = 1
     )
     (
-        input               reset_,
-
         // In the case come either straight from the IO pins or from the
         // virtual jtag TAP.
         input   wire        tck,
@@ -19,6 +17,7 @@ module icetap_jtag_regs
         output              icetap_tdo,
 
         // TAP states
+        input               test_logic_reset,
         input               capture_dr,
         input               shift_dr,
         input               update_dr,
@@ -58,7 +57,7 @@ module icetap_jtag_regs
             end
         end
 
-        if (!reset_) begin
+        if (test_logic_reset) begin
             scan_n      <= `JTAG_REG_VOID;
         end
     end

@@ -27,6 +27,7 @@ module icetap_top_jtag #(
         input                   tdi,
         output                  icetap_tdo,
 
+        input                   test_logic_reset,
         input                   capture_dr,
         input                   shift_dr,
         input                   update_dr,
@@ -65,7 +66,6 @@ module icetap_top_jtag #(
 
         // Convert SPI into generic scan interface
         icetap_jtag_regs u_icetap_jtag_regs (
-            .reset_                         (reset_),
             .tck                            (tck),
             .tdi                            (tdi),
             .icetap_tdo                     (icetap_tdo),
@@ -73,6 +73,7 @@ module icetap_top_jtag #(
             .scan_n_ir                      (scan_n_ir),
             .extest_ir                      (extest_ir),
 
+            .test_logic_reset               (test_logic_reset),
             .capture_dr                     (capture_dr),
             .shift_dr                       (shift_dr),
             .update_dr                      (update_dr),
@@ -116,10 +117,10 @@ module icetap_top_jtag #(
         // Convert scan chains into parallel signals to control the actual icetap
         icetap_scan 
         #(
-          .NR_SIGNALS                           (NR_SIGNALS),
-          .COMPLEX_STORE                        (COMPLEX_STORE),
-          .COMPLEX_TRIGGER                      (COMPLEX_TRIGGER)
-          )
+            .NR_SIGNALS                             (NR_SIGNALS),
+            .COMPLEX_STORE                          (COMPLEX_STORE),
+            .COMPLEX_TRIGGER                        (COMPLEX_TRIGGER)
+        )
         u_scan
         (
             // Scan Interface

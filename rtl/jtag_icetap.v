@@ -24,7 +24,7 @@ module jtag_icetap #(
 
     wire [`IR_LENGTH-1:0]  ir;
 
-    wire        capture_dr, shift_dr, update_dr;
+    wire        test_logic_reset, capture_dr, shift_dr, update_dr;
 
 `ifdef JTAG_TAP_ALTERA
     wire        tck;
@@ -62,6 +62,7 @@ module jtag_icetap #(
 
         .tdo_i(tdo2tap),
 
+        .test_logic_reset_o(test_logic_reset),
         .capture_dr_o(capture_dr),
         .shift_dr_o(shift_dr),
         .update_dr_o(update_dr)
@@ -104,7 +105,7 @@ module jtag_icetap #(
         .signals_in         (signals_in),
 
         .scan_clk           (tck),
-        .scan_reset_        (reset_)
+        .scan_reset_        (!test_logic_reset)
     );
 
 

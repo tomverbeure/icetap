@@ -5,12 +5,11 @@
 // by SPI, JTAG etc.
 module icetap_scan 
     #(
-            parameter NR_SIGNALS            = 16,
+        parameter NR_SIGNALS            = 16,
         parameter RECORD_DEPTH      = 256,
-            parameter COMPLEX_STORE         = 1,
-            parameter COMPLEX_TRIGGER       = 1
-        ) 
-        (
+        parameter COMPLEX_STORE         = 1,
+        parameter COMPLEX_TRIGGER       = 1
+    ) (
         // Scan interface
         input               scan_clk,
         input               scan_reset_,
@@ -103,16 +102,15 @@ module icetap_scan
     //============================================================
     // CMD
     //============================================================
-    reg [2:0] cmd_shift_reg;
+    reg [2:0] cmd_reg;
 
     always @(posedge scan_clk) begin
-        if (!scan_reset_) begin
-            cmd_shift_reg <= 0;
+        if (cmd_shift_ena) begin
+            cmd_reg <= { cmd_shift_data, cmd_reg[2:1] };
         end
-        else begin
-            if (cmd_shift_ena) begin
-                cmd_shift_reg <= { cmd_shift_data, cmd_shift_reg };
-            end
+
+        if (!scan_reset_) begin
+            cmd_reg <= 0;
         end
     end
 
@@ -218,7 +216,7 @@ module icetap_scan
 
     always @(posedge src_clk) begin
         if (cmd_update_sync && !cmd_update_sync_d) begin
-            cmd_reg_sync    <= cmd_shift_reg;
+            cmd_reg_sync    <= cmd_reg;
         end
 
         if (!src_reset_) begin

@@ -38,6 +38,14 @@
         end
     endtask
 
+    task jtag_spin_run_test_idle;
+        input integer spin_cycles;
+        begin
+            tms = 0;
+            jtag_toggle_tck(spin_cycles);
+        end
+    endtask
+
     task jtag_scan_vector;
 
         input [255:0]   vector_in;

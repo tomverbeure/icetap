@@ -5,7 +5,6 @@ module icetap_tb();
 
     reg clk;
     reg reset_;
-    reg trst_;
 
     initial begin
         clk = 1'b0;
@@ -21,10 +20,8 @@ module icetap_tb();
         $dumpvars(0);
 
         reset_  = 0;
-        trst_   = 0;
         repeat(10) @(posedge clk);
         reset_  = 1;
-        trst_   = 1;
 
         repeat(10000) @(posedge clk);
         $display("%t: Simulation complete...", $time);
@@ -48,6 +45,7 @@ module icetap_tb();
         end
     end
 
+    reg     trst_;
     reg     tck;
     reg     tms;
     reg     tdi;
@@ -101,9 +99,11 @@ module icetap_tb();
         tck     = 0;
         tdi     = 0;
         tms     = 0;
+        trst_   = 0;
 
-        @(posedge trst_);
+        @(posedge reset_);
 
+        trst_   = 1;
         jtag_clocked_reset();
 
         jtag_reset_to_run_test_idle();
@@ -155,6 +155,15 @@ module icetap_tb();
         jtag_scan_ir(`EXTEST);
         jtag_scan_dr(24'h000048, 24, 0);
 
+        //============================================================
+        // Start!
+        //============================================================
+        $display("command");
+        jtag_set_scan_n(`JTAG_REG_CMD);
+        jtag_scan_ir(`EXTEST);
+        jtag_scan_dr(3'h1, 3, 1);
+        jtag_spin_run_test_idle(10);    // Spin cycles to make sure command gets through synchronizer
+
         repeat(100) @(posedge clk);
         $finish;
 
@@ -195,29 +204,6 @@ endmodule
         @(posedge reset_);
 
         repeat(100) @(posedge clk);
-
-        // STORE MASK
-        spi_xfer_start;
-        spi_xfer_data(8'h03, miso_byte);
-        spi_xfer_data(8'h00, miso_byte);
-        spi_xfer_data(8'h00, miso_byte);
-        spi_xfer_data(8'h01, miso_byte);
-        spi_xfer_end;
-
-        // TRIGGER MASK
-        spi_xfer_start;
-        spi_xfer_data(8'h04, miso_byte);
-        spi_xfer_data(8'h00, miso_byte);
-        spi_xfer_data(8'h00, miso_byte);
-        spi_xfer_data(8'h48, miso_byte);
-        spi_xfer_end;
-
-        // CMD
-        spi_xfer_start;
-        spi_xfer_data(8'h00, miso_byte);
-        // start, !store_always, !trigger_always
-        spi_xfer_data(8'h01, miso_byte);
-        spi_xfer_end;
 
         repeat(5) begin
             $display("--- Status");

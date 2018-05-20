@@ -114,6 +114,7 @@ module jtag_tap_generic(
                 tdo_padoe_o,
 
                 // TAP states
+                test_logic_reset_o,
                 shift_dr_o,
                 pause_dr_o, 
                 update_dr_o,
@@ -136,6 +137,7 @@ module jtag_tap_generic(
     output  tdo_padoe_o;    // Output enable for JTAG test data output pad 
 
     // TAP states
+    output  test_logic_reset_o;
     output  shift_dr_o;
     output  pause_dr_o;
     output  update_dr_o;
@@ -172,6 +174,7 @@ module jtag_tap_generic(
     reg     tms_q1, tms_q2, tms_q3, tms_q4;
     wire    tms_reset;
 
+    assign test_logic_reset_o = test_logic_reset;
     assign shift_dr_o = shift_dr;
     assign pause_dr_o = pause_dr;
     assign update_dr_o = update_dr;
