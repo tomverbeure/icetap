@@ -17,6 +17,9 @@ output/icetap_tb: $(ICETAP_FILES)
 sim: output/icetap_tb
 	./output/icetap_tb
 
+waves:
+	gtkwave ./output/waves.vcd waves.gtkw
+
 
 output/chip.bin: output/chip.blif
 	arachne-pnr -d 8k -P tq144:4k -p $(PCF_FILE) output/chip.blif -o output/chip.txt

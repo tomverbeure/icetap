@@ -1,174 +1,30 @@
 [*]
-[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Sat Apr  7 07:07:40 2018
+[*] GTKWave Analyzer v3.3.90 (w)1999-2018 BSI
+[*] Sun May 20 03:31:26 2018
 [*]
-[dumpfile] "/home/ubuntu/projects/icetap/rtl/output/waves.vcd"
-[dumpfile_mtime] "Sat Apr  7 07:07:09 2018"
-[dumpfile_size] 499751
-[savefile] "/home/ubuntu/projects/icetap/rtl/output/waves.gtkw"
+[dumpfile] "/home/tom/projects/icetap/rtl/output/waves.vcd"
+[dumpfile_mtime] "Sun May 20 03:29:45 2018"
+[dumpfile_size] 21477818
+[savefile] "/home/tom/projects/icetap/rtl/waves.gtkw"
 [timestart] 0
 [size] 1655 971
 [pos] -1 -1
-*-22.639149 8525000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-16.721867 95000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] icetap_tb.
-[treeopen] icetap_tb.u_icetap_top.
-[treeopen] icetap_tb.u_icetap_top.u_scan.
-[treeopen] icetap_tb.u_icetap_top.u_scan.u_sync_pulse_cmd_shift_update.
 [sst_width] 384
-[signals_width] 348
+[signals_width] 374
 [sst_expanded] 1
 [sst_vpaned_height] 285
 @28
+icetap_tb.tck
+icetap_tb.tdi
+icetap_tb.tdo
+icetap_tb.tdo_en
+icetap_tb.tms
 icetap_tb.clk
+@29
 icetap_tb.reset_
-icetap_tb.spi_ss_
-icetap_tb.spi_clk
-icetap_tb.spi_mosi
-icetap_tb.spi_miso
 @22
 icetap_tb.signals_in[7:0]
-icetap_tb.u_icetap_top.u_spi.spi_bit_cntr[3:0]
-icetap_tb.u_icetap_top.u_spi.spi_addr[7:0]
-@28
-icetap_tb.u_icetap_top.u_spi.addr_done
-icetap_tb.u_icetap_top.u_spi.store_mask_shift_ena
-icetap_tb.u_icetap_top.u_spi.store_mask_shift_data
-icetap_tb.u_icetap_top.u_spi.trigger_mask_shift_ena
-icetap_tb.u_icetap_top.u_spi.trigger_mask_shift_data
-icetap_tb.u_icetap_top.u_spi.cmd_shift_ena
-icetap_tb.u_icetap_top.u_spi.cmd_shift_data
-icetap_tb.u_icetap_top.u_spi.cmd_shift_update
-icetap_tb.u_icetap_top.u_spi.data_shift_ena
-icetap_tb.u_icetap_top.u_spi.data_shift_data
-icetap_tb.u_icetap_top.u_spi.data_shift_update
-@200
--
-@22
-icetap_tb.u_icetap_top.u_scan.store_mask_vec[23:0]
-icetap_tb.u_icetap_top.u_scan.trigger_mask_vec[23:0]
-@28
-icetap_tb.u_icetap_top.u_scan.cmd_shift_reg[2:0]
-icetap_tb.u_icetap_top.u_scan.cmd_reg_sync[2:0]
-icetap_tb.u_icetap_top.u_scan.store_always
-icetap_tb.u_icetap_top.u_scan.trigger_always
-icetap_tb.u_icetap_top.u_scan.start
-@200
--
-@820
-icetap_tb.u_icetap_top.u_icetap_bram.cur_state_txt[127:0]
-@28
-icetap_tb.u_icetap_top.u_icetap_bram.cur_state[2:0]
-@22
-icetap_tb.u_icetap_top.u_icetap_bram.signals_in[7:0]
-icetap_tb.u_icetap_top.u_icetap_bram.store_trigger_vec[7:0]
-icetap_tb.u_icetap_top.u_icetap_bram.trigger_vec[7:0]
-@28
-icetap_tb.u_icetap_top.u_icetap_bram.store_trigger
-icetap_tb.u_icetap_top.u_icetap_bram.trigger
-@200
--
-@28
-icetap_tb.u_icetap_top.u_icetap_bram.store_req
-@22
-icetap_tb.u_icetap_top.u_icetap_bram.store_addr[7:0]
-icetap_tb.u_icetap_top.u_icetap_bram.store_data[7:0]
-@28
-icetap_tb.u_icetap_top.u_icetap_bram.store_addr_wrapped
-@22
-icetap_tb.u_icetap_top.u_icetap_bram.start_addr[7:0]
-icetap_tb.u_icetap_top.u_icetap_bram.trigger_addr[7:0]
-icetap_tb.u_icetap_top.u_icetap_bram.stop_addr[7:0]
-@28
-icetap_tb.u_icetap_top.u_icetap_bram.incr_start_addr
-icetap_tb.u_icetap_top.u_icetap_bram.state[1:0]
-@200
--
-@28
-icetap_tb.u_icetap_top.u_scan.state_sync[1:0]
-@200
--
-@c00022
-icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-@28
-(0)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(1)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(2)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(3)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(4)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(5)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(6)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(7)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(8)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(9)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(10)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(11)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(12)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(13)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(14)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(15)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(16)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(17)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(18)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(19)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(20)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(21)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(22)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(23)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(24)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(25)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(26)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(27)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(28)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(29)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(30)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(31)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(32)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(33)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(34)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(35)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(36)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(37)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(38)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(39)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(40)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(41)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(42)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(43)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(44)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(45)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(46)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(47)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(48)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(49)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(50)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(51)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(52)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(53)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(54)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(55)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(56)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(57)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(58)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(59)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(60)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(61)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(62)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-(63)icetap_tb.u_icetap_top.u_scan.status_vec[63:0]
-@1401200
--group_end
-@28
-icetap_tb.u_icetap_top.u_scan.status_shift_update
-icetap_tb.u_icetap_top.u_scan.status_shift_ena
-icetap_tb.u_icetap_top.u_scan.status_shift_data
-@22
-icetap_tb.u_icetap_top.u_scan.status_scan_reg[7:0]
-icetap_tb.miso_byte[7:0]
-@28
-icetap_tb.spi_ss_
-icetap_tb.spi_clk
-icetap_tb.spi_mosi
-icetap_tb.spi_miso
-@24
-icetap_tb.spi_xfer_data.i
 [pattern_trace] 1
 [pattern_trace] 0
