@@ -1,19 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.3.90 (w)1999-2018 BSI
-[*] Sun May 20 05:09:51 2018
+[*] Sun May 20 05:13:41 2018
 [*]
 [dumpfile] "/home/tom/projects/icetap/rtl/output/waves.vcd"
-[dumpfile_mtime] "Sun May 20 05:08:21 2018"
+[dumpfile_mtime] "Sun May 20 05:10:49 2018"
 [dumpfile_size] 358358
 [savefile] "/home/tom/projects/icetap/rtl/waves.gtkw"
-[timestart] 25358400
+[timestart] 0
 [size] 1655 971
 [pos] -1 -1
-*-15.721867 25475000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-23.721867 25475000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] icetap_tb.
 [treeopen] icetap_tb.u_jtag_icetap.
 [treeopen] icetap_tb.u_jtag_icetap.u_icetap_top_jtag.
-[treeopen] icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.
 [sst_width] 384
 [signals_width] 374
 [sst_expanded] 1
@@ -74,10 +73,11 @@ icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.cmd_reg_sync[2:0]
 -
 @28
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.src_clk
-@29
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.start
-@28
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.trigger_always
+@22
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.store_always
+@821
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.cur_state_txt[127:0]
 [pattern_trace] 1
 [pattern_trace] 0
