@@ -86,14 +86,14 @@ module top (
 		#( .NR_SIGNALS(8) ) 
 	u_icetap_top
 		(
-		 .spi_clk		(spi_clk),
-		 .spi_ss_		(spi_ss_),
-		 .spi_mosi		(spi_mosi),
-		 .spi_miso		(spi_miso),
+		 .spi_clk		    (spi_clk),
+		 .spi_ss_		    (spi_ss_),
+		 .spi_mosi		    (spi_mosi),
+		 .spi_miso		    (spi_miso),
 
-		 .scan_clk		(clk),
+		 .scan_clk		    (clk),
 		 .scan_reset_		(reset_),
-		 .src_clk		(clk),
+		 .src_clk		    (clk),
 		 .src_reset_		(reset_)
 		);
 

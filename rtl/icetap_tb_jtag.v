@@ -3,14 +3,9 @@
 
 module icetap_tb();
 
-    initial begin
-        $dumpfile("output/waves.vcd");
-        $dumpvars(0);
-    end
-    
-
     reg clk;
     reg reset_;
+    reg trst_;
 
     initial begin
         clk = 1'b0;
@@ -21,13 +16,18 @@ module icetap_tb();
     end
 
     initial begin
-        reset_ = 1'b0;
-        repeat(10) @(posedge clk)
-            ;
-        reset_ = 1'b1;
+        $display("%t: Start of simulation!", $time);
+        $dumpfile("output/waves.vcd");
+        $dumpvars(0);
 
-        repeat(1000000) @(posedge clk);
+        reset_  = 0;
+        trst_   = 0;
+        repeat(10) @(posedge clk);
+        reset_  = 1;
+        trst_   = 1;
 
+        repeat(10000) @(posedge clk);
+        $display("%t: Simulation complete...", $time);
         $finish;
     end
 
@@ -52,7 +52,7 @@ module icetap_tb();
     reg     tms;
     reg     tdi;
     wire    tdo;
-    reg    tdo_en;
+    wire    tdo_oe;
 
     jtag_icetap
     #(
@@ -64,6 +64,7 @@ module icetap_tb();
         .tms                (tms),
         .tdi                (tdi),
         .tdo                (tdo),
+        .tdo_oe             (tdo_oe),
 
         .clk                (clk),
         .reset_             (reset_),
@@ -77,6 +78,114 @@ module icetap_tb();
     parameter MAX_TDO_VEC   = 64;
 
 `include "jtag_tb_tasks.v"
+
+
+    initial begin
+        tck     = 0;
+        tdi     = 0;
+        tms     = 0;
+
+        @(posedge trst_);
+
+        jtag_clocked_reset();
+
+        jtag_reset_to_run_test_idle();
+
+        //============================================================
+        // Default IR should be IDCODE. Shift it out...
+        //============================================================
+
+        // SELECT_DR_SCAN
+        jtag_apply_tms(1);
+
+        // CAPTURE_DR
+        jtag_apply_tms(0);
+
+        // SHIFT_DR
+        jtag_apply_tms(0);
+
+        // Scan out IDCODE
+        jtag_scan_vector(32'h0, 32, 1);
+
+        // EXIT1_DR -> UPDATE_DR
+        jtag_apply_tms(1);
+
+        // UPDATE_DR -> RUN_TEST_IDLE
+        jtag_apply_tms(0);
+
+        $display("%t: IDCODE scanned out: %x", $time, captured_tdo_vec[31:0]);
+
+        //============================================================
+        // Select IR 0xa
+        //============================================================
+        jtag_scan_ir(4'b1111);
+        jtag_scan_ir(4'ha);
+
+        //============================================================
+        // Select IDCODE register
+        //============================================================
+        jtag_scan_ir(`IDCODE);
+        jtag_scan_dr(32'd0, 32, 1);
+
+        //============================================================
+        // GPIOs
+        //============================================================
+        // All GPIOs output
+        $display("CONFIG - SCAN_N");
+        jtag_scan_ir(`SCAN_N);
+        jtag_scan_dr(1'b0, 1, 0);
+        $display("CONFIG - EXTEST WR");
+        jtag_scan_ir(`EXTEST);
+        jtag_scan_dr(4'b1111, 4, 0);
+
+        // capture_dr without update_dr (to read back the value)
+        $display("CONFIG - EXTEST RD");
+        jtag_scan_dr(4'b0000, 4, 0);
+
+        // Set GPIO output values
+        $display("DATA - SCAN_N");
+        jtag_scan_ir(`SCAN_N);
+        jtag_scan_dr(1'b1, 1, 0);
+        $display("DATA - EXTEST");
+        jtag_scan_ir(`EXTEST);
+
+        jtag_scan_dr(4'b1111, 4, 1);
+        jtag_scan_dr(4'b1000, 4, 0);
+        jtag_scan_dr(4'b1001, 4, 1);
+        jtag_scan_dr(4'b1010, 4, 0);
+        jtag_scan_dr(4'b1011, 4, 0);
+        jtag_scan_dr(4'b1100, 4, 0);
+        jtag_scan_dr(4'b1101, 4, 0);
+        jtag_scan_dr(4'b1110, 4, 0);
+        jtag_scan_dr(4'b1111, 4, 0);
+        jtag_scan_dr(4'b1000, 4, 0);
+
+    end
+
+
+    reg [MAX_TDO_VEC-1:0]   captured_tdo_vec;
+    initial begin: CAPTURE_TDO
+        integer                 bit_cntr;
+
+        forever begin
+            while(!tdo_oe) begin
+                @(posedge tck);
+            end
+            bit_cntr = 0;
+            captured_tdo_vec = {MAX_TDO_VEC{1'bz}};
+            while(tdo_oe) begin
+                captured_tdo_vec[bit_cntr] = tdo;
+                bit_cntr = bit_cntr + 1;
+                @(posedge tck);
+            end
+            $display("%t: TDO_CAPTURED: %b", $time, captured_tdo_vec);
+            @(posedge tck);
+        end
+    end
+
+
+
+endmodule
 
 `ifdef BLAH
     reg [7:0] miso_byte;
@@ -139,10 +248,3 @@ module icetap_tb();
         $finish;
     end
 `endif
-
-
-endmodule
-
-// Local Variables:
-// verilog-library-flags:("-f icetap.vc")
-// End:

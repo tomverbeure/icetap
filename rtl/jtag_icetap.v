@@ -16,6 +16,7 @@ module jtag_icetap #(
         input   wire        tms,
         input   wire        tdi,
         output  wire        tdo,
+        output  wire        tdo_oe,
 `endif
 
         input   wire [NR_SIGNALS-1:0] signals_in
@@ -55,6 +56,7 @@ module jtag_icetap #(
         .tms_pad_i(tms),
         .tdi_pad_i(tdi),
         .tdo_pad_o(tdo),
+        .tdo_padoe_o(tdo_oe),
 
         .ir_o(ir),
 

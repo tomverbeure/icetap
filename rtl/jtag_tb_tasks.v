@@ -1,9 +1,21 @@
 
+    task jtag_toggle_tck;
+        input integer cnt;
+        begin
+            repeat(cnt) begin
+                tck     = 0;
+                repeat(5) @(negedge clk);
+                tck     = 1;
+                repeat(5) @(negedge clk);
+            end
+        end
+    endtask
+
     task jtag_clocked_reset;
         begin
             $display("%t: JTAG Clocked Reset", $time);
             tms = 1;
-            repeat(5) @(negedge tck);
+            jtag_toggle_tck(5);
         end
     endtask
 
@@ -12,7 +24,7 @@
         begin
             //$display("Apply TMS %d", tms_in);
             tms = tms_in;
-            @(negedge tck);
+            jtag_toggle_tck(1);
         end
     endtask
 
@@ -22,7 +34,7 @@
 
             // Go to RTI
             tms = 0;
-            @(negedge tck);
+            jtag_toggle_tck(1);
         end
     endtask
 
@@ -40,7 +52,7 @@
                 if (i == nr_bits-1) begin
                     tms = exit1;            // Go to Exit1-*
                 end
-                @(negedge tck);
+                jtag_toggle_tck(1);
             end
         end
     endtask
@@ -63,14 +75,11 @@
 
             // Go to Shift-IR
             jtag_apply_tms(0);
-            tdo_en = 1;
 
             // Shift vector, then go to EXIT1_IR
             jtag_scan_vector(wanted_ir, IR_LENGTH, 1);
 
             // Go to Update-IR
-            tdo_en = 0;
-
             jtag_apply_tms(1);
 
             // Go to Run Test Idle
@@ -95,12 +104,9 @@
     
             // SHIFT_DR
             jtag_apply_tms(0);
-            tdo_en = 1;
     
             // Shift vector, then go to EXIT1_DR
             jtag_scan_vector(vector_in, nr_bits, 1);
-
-            tdo_en = 0;
 
             if (early_out) begin
                 // EXIT1_DR -> UPDATE_DR

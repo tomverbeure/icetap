@@ -10,7 +10,7 @@ ICETAP_FILES = $(ICETAP_SHARED_DESIGN_FILES) $(ICETAP_JTAG_DESIGN_FILES) $(ICETA
 
 PCF_FILE = blackice-ii.pcf
 
-output/icetap_tb: $(ICETAP_FILES) 
+output/icetap_tb: $(ICETAP_FILES) jtag_tb_tasks.v
 	mkdir -p output
 	iverilog -DJTAG_TAP_GENERIC -I. -o output/icetap_tb $(ICETAP_FILES)
 
