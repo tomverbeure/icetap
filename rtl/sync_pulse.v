@@ -1,4 +1,6 @@
 
+`default_nettype none
+
 module sync_pulse(
 	input 	src_clk,
 	input 	src_reset_,

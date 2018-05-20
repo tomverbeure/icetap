@@ -1,4 +1,6 @@
 
+`default_nettype none
+
 module top (
 	// 100MHz clock input
 	input		CLK_OSC100,
@@ -93,7 +95,7 @@ module top (
 		 .scan_reset_		(reset_),
 		 .src_clk		(clk),
 		 .src_reset_		(reset_)
-		/*AUTOINST*/);
+		);
 
 endmodule
 

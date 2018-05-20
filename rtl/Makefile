@@ -1,15 +1,18 @@
 
+ICETAP_SHARED_DESIGN_FILES = sync_pulse.v sync_reset.v sync_dd_c.v icetap.v icetap_scan.v icetap_mem.v
+ICETAP_SPI_DESIGN_FILES  = icetap_spi.v icetap_top_spi.v 
+ICETAP_JTAG_DESIGN_FILES = jtag_icetap.v icetap_top_jtag.v icetap_jtag_regs.v jtag_tap_generic.v
 
-ICETAP_DESIGN_FILES = sync_pulse.v sync_reset.v sync_dd_c.v icetap.v icetap_spi.v icetap_top.v
-ICETAP_TB_FILES	= icetap_tb.v uart_tx.v
+ICETAP_SPI_TB_FILES	    = icetap_tb_spi.v uart_tx.v
+ICETAP_JTAG_TB_FILES	= icetap_tb_jtag.v uart_tx.v
 
-VERILOG_FILES = top.v uart_tx.v sync_reset.v sync_dd_c.v icetap.v icetap_top.v
+ICETAP_FILES = $(ICETAP_SHARED_DESIGN_FILES) $(ICETAP_JTAG_DESIGN_FILES) $(ICETAP_JTAG_TB_FILES)
 
 PCF_FILE = blackice-ii.pcf
 
-output/icetap_tb: $(ICETAP_TB_FILES) $(ICETAP_DESIGN_FILES)
+output/icetap_tb: $(ICETAP_FILES) 
 	mkdir -p output
-	iverilog -o output/icetap_tb $(ICETAP_TB_FILES) $(ICETAP_DESIGN_FILES)
+	iverilog -DJTAG_TAP_GENERIC -I. -o output/icetap_tb $(ICETAP_FILES)
 
 sim: output/icetap_tb
 	./output/icetap_tb

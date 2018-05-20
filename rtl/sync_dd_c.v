@@ -1,4 +1,6 @@
 
+`default_nettype none
+
 module sync_dd_c(
 	input 	clk,
 	input 	reset_, 

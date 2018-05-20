@@ -1,4 +1,6 @@
 
+`default_nettype none
+
 module icetap_spi 
 	(
 	input  			spi_clk,

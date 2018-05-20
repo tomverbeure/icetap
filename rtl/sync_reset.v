@@ -1,4 +1,6 @@
 
+`default_nettype none
+
 module sync_reset(
 	input 	clk,
 	input 	reset_in_, 

@@ -14,6 +14,8 @@
  * 
  */
 
+`default_nettype none
+
 module uart_rx
 	(
 	input 		clk, 
