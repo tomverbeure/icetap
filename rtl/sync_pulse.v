@@ -2,12 +2,12 @@
 `default_nettype none
 
 module sync_pulse(
-	input 	src_clk,
-	input 	src_reset_,
-	input 	pulse_in,
-	input 	dst_clk,
-	input 	dst_reset_,
-	output 	pulse_out
+	input 	        src_clk,
+	input 	        src_reset_,
+	input 	        pulse_in,
+	input 	        dst_clk,
+	input 	        dst_reset_,
+	output 	wire    pulse_out
 	);
 
 	reg pulse_in_active;
@@ -32,7 +32,6 @@ module sync_pulse(
 		pulse_out_active_d <= pulse_out_active;
 	end
 
-	wire pulse_out;
 	assign pulse_out = pulse_out_active && !pulse_out_active_d;
 
 	wire pulse_out_active_src;

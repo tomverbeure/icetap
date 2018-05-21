@@ -2,15 +2,13 @@
 `default_nettype none
 
 module sync_reset(
-	input 	clk,
-	input 	reset_in_, 
-	output	reset_out_
+	input 	wire    clk,
+	input 	wire    reset_in_, 
+	output	wire    reset_out_
 	);
 
-	wire	reset_in_;
 	reg	    reset_in_p1_;
 	reg	    reset_in_p2_;
-	wire	reset_out_;
 
 	always @(posedge clk or negedge reset_in_)
 	begin

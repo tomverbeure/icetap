@@ -1,6 +1,8 @@
 
 `default_nettype none
 
+`include "jtag_tap_defines.v"
+
 module icetap_jtag_regs
     #(
         parameter NR_SIGNALS = 1
@@ -62,6 +64,7 @@ module icetap_jtag_regs
         end
     end
 
+`ifndef SYNTHESIS
     reg [1023:0] scan_n_text;
     always @* begin
         case(scan_n)
@@ -74,6 +77,7 @@ module icetap_jtag_regs
             default:                scan_n_text = "<UNKNOWN>";
         endcase
     end
+`endif
 
     // COMMAND
     always @* begin
@@ -137,9 +141,9 @@ module icetap_jtag_regs
         end
     end
 
-    assign icetap_tdo = scan_n_ir                   ? scan_n                :
+    assign icetap_tdo = scan_n_ir                   ? scan_n[0]             :
                         scan_n == `JTAG_REG_STATUS  ? status_shift_data     :
                         scan_n == `JTAG_REG_DATA    ? data_shift_data       :
-                                                      0;
+                                                      1'b0;
 
 endmodule

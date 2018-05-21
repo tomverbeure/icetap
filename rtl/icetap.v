@@ -17,24 +17,20 @@ module icetap_bram
         input [3*NR_SIGNALS-1:0]    store_mask_vec,
         input [3*NR_SIGNALS-1:0]    trigger_mask_vec,
 
-        output [1:0]                state,
-
-        output [RAM_ADDR_BITS-1:0]  start_addr,
-        output [RAM_ADDR_BITS-1:0]  trigger_addr,
-        output [RAM_ADDR_BITS-1:0]  stop_addr,
+        output     [1:0]                state,
+        output reg [RAM_ADDR_BITS-1:0]  start_addr,
+        output reg [RAM_ADDR_BITS-1:0]  trigger_addr,
+        output reg [RAM_ADDR_BITS-1:0]  stop_addr,
 
         input                       scan_clk,
         input                       scan_reset_,
 
         input                       read_req_first,
-        output                      read_req_next,
+        input                       read_req_next,
         output [NR_SIGNALS-1:0]     read_data
     );
 
     localparam RAM_ADDR_BITS = $clog2(RECORD_DEPTH);
-
-    wire src_clk;
-    wire src_reset_;
 
     reg [NR_SIGNALS-1:0]    signals_in_p1, signals_in_p2;
 
@@ -55,7 +51,7 @@ module icetap_bram
     wire [NR_SIGNALS-1:0] store_trigger_vec;
 
     genvar i;
-    for(i=0; i<NR_SIGNALS; i=i+1) begin
+    generate for(i=0; i<NR_SIGNALS; i=i+1) begin : store_mask_loop
         assign store_trigger_vec[i] = store_mask_vec[3*i+2:3*i] == TRIGGER_HIGH    ?  signals_in_p1[i]                       :
                                       store_mask_vec[3*i+2:3*i] == TRIGGER_LOW     ? !signals_in_p1[i]                       :
                                       store_mask_vec[3*i+2:3*i] == TRIGGER_RISING  ?  signals_in_p1[i] && !signals_in_p2[i] :
@@ -63,6 +59,7 @@ module icetap_bram
                                                                                    1'b0;
 
     end
+    endgenerate
 
     wire store_trigger;
     assign store_trigger = |store_trigger_vec || store_always;
@@ -72,7 +69,7 @@ module icetap_bram
     //============================================================
     wire [NR_SIGNALS-1:0]   trigger_vec;
 
-    for(i=0; i<NR_SIGNALS; i=i+1) begin
+    generate for(i=0; i<NR_SIGNALS; i=i+1) begin :trigger_mask_loop
         assign trigger_vec[i] = trigger_mask_vec[3*i+2:3*i] == TRIGGER_HIGH    ?  signals_in_p1[i]                       :
                                 trigger_mask_vec[3*i+2:3*i] == TRIGGER_LOW     ? !signals_in_p1[i]                       :
                                 trigger_mask_vec[3*i+2:3*i] == TRIGGER_RISING  ?  signals_in_p1[i] && !signals_in_p2[i] :
@@ -80,6 +77,7 @@ module icetap_bram
                                                                               1'b1;
 
     end
+    endgenerate
 
     wire trigger;
     assign trigger = &trigger_vec || trigger_always;
@@ -90,12 +88,12 @@ module icetap_bram
     reg [NR_SIGNALS-1:0]    store_data;
 
     reg [RAM_ADDR_BITS-1:0] store_addr; 
-    reg [RAM_ADDR_BITS:0]   store_addr_nxt;
+    reg [RAM_ADDR_BITS:0]   store_addr_nxt;             // Deliberately 1 bit larger!
     reg store_addr_wrapped, store_addr_wrapped_nxt;
 
-    reg [RAM_ADDR_BITS-1:0] start_addr, start_addr_nxt;
-    reg [RAM_ADDR_BITS-1:0] stop_addr, stop_addr_nxt;
-    reg [RAM_ADDR_BITS-1:0] trigger_addr, trigger_addr_nxt;
+    reg [RAM_ADDR_BITS-1:0] start_addr_nxt;
+    reg [RAM_ADDR_BITS-1:0] stop_addr_nxt;
+    reg [RAM_ADDR_BITS-1:0] trigger_addr_nxt;
 
     reg incr_start_addr, incr_start_addr_nxt;
     reg store_req;
@@ -116,13 +114,13 @@ module icetap_bram
 
         start_recording         = 1'b0;
         recording               = 1'b0;
+        incr_start_addr_nxt     = 1'b0;
 
         case(cur_state)
             FSM_IDLE: begin
                 if (start) begin
                     start_recording         = 1'b1;
                     start_addr_nxt          = 0;
-                    incr_start_addr_nxt     = 1'b0;
 
                     nxt_state               = FSM_PRE_TRIGGER;
                 end
@@ -168,7 +166,7 @@ module icetap_bram
         else if (recording) begin
             if (store_trigger) begin
                 store_req               = 1'b1;
-                store_addr_nxt          = store_addr + 1;
+                store_addr_nxt          = store_addr + 1'b1;
                 store_addr_wrapped_nxt  = store_addr_nxt[RAM_ADDR_BITS];
             end
         end
@@ -176,7 +174,7 @@ module icetap_bram
 
     always @(posedge src_clk) begin
         cur_state           <= nxt_state;
-        store_addr          <= store_addr_nxt;
+        store_addr          <= store_addr_nxt[RAM_ADDR_BITS-1:0];
         store_addr_wrapped  <= store_addr_wrapped_nxt;
         start_addr          <= start_addr_nxt;
         trigger_addr        <= trigger_addr_nxt;
@@ -191,6 +189,7 @@ module icetap_bram
         end 
     end
 
+`ifndef SYNTHESIS
     reg [16*8-1:0] cur_state_txt;
 
     always @(*) begin
@@ -201,8 +200,8 @@ module icetap_bram
             default:          cur_state_txt = "<UNKOWN>";
         endcase
     end
+`endif
 
-    wire [1:0] state;
     assign state = cur_state;
 
     reg [RAM_ADDR_BITS-1:0] rd_addr;
@@ -214,7 +213,7 @@ module icetap_bram
             rd_addr <= 0;
         end
         else if (read_req_next) begin
-            rd_addr <= rd_addr + 1;
+            rd_addr <= rd_addr + 1'b1;
         end
 
         if (!scan_reset_) begin

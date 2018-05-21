@@ -191,6 +191,7 @@ module jtag_tap_generic(
 
     assign tms_reset = tms_q1 & tms_q2 & tms_q3 & tms_q4 & tms_pad_i;    // 5 consecutive TMS=1 causes reset
 
+`ifndef SYNTHESIS
     reg [1023:0] state_text;
 
     always @* begin
@@ -211,6 +212,7 @@ module jtag_tap_generic(
         else if (exit2_ir)          state_text = "EXIT2-IR";
         else if (update_ir)         state_text = "UPDATE-IR";
     end
+`endif
 
     /**********************************************************************************
     *                                                                                 *
@@ -557,6 +559,7 @@ module jtag_tap_generic(
       case(latched_jtag_ir)    /* synthesis parallel_case */ 
         `IDCODE:            idcode_select           = 1'b1;    // ID Code
         `BYPASS:            bypass_select           = 1'b1;    // BYPASS
+        default:            ;
       endcase
     end
 

@@ -43,14 +43,15 @@ module top (
             count <= 0;
         end
         else begin
-            count <= count + 1;
+            count <= count + 1'b1;
         end
     end
 
     jtag_icetap
         #( .NR_SIGNALS(16), .RECORD_DEPTH(256) )
-    u_icetap_top
+    u_jtag_icetap
     (
+        .trst_          (1'b1),
         .tck            (tck),
         .tms            (tms),
         .tdi            (tdi),

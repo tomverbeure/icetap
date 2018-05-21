@@ -33,8 +33,8 @@ module icetap_scan
         output              data_shift_data,
 
         // Trigger settings
-        output [NR_SIGNALS*3-1:0]   store_mask_vec,
-        output [NR_SIGNALS*3-1:0]   trigger_mask_vec,
+        output reg [NR_SIGNALS*3-1:0]   store_mask_vec,
+        output reg [NR_SIGNALS*3-1:0]   trigger_mask_vec,
 
         input                       src_clk,
         input                       src_reset_,
@@ -51,24 +51,17 @@ module icetap_scan
         input [RAM_ADDR_BITS-1:0]   stop_addr,
 
         output                      read_req_first,
-        output                      read_req_next,
+        output reg                  read_req_next,
         input [NR_SIGNALS-1:0]      read_data
 
     );
 
     localparam RAM_ADDR_BITS = $clog2(RECORD_DEPTH);
 
-    wire src_clk;
-    wire src_reset_;
-
-
-    reg [NR_SIGNALS*3-1:0]      store_mask_vec;
-    reg [NR_SIGNALS*3-1:0]      trigger_mask_vec;
-
     //============================================================
     // STORE_MASK
     //============================================================
-    if (COMPLEX_STORE == 1) begin
+    generate if (COMPLEX_STORE == 1) begin
         always @(posedge scan_clk) begin
             if (store_mask_shift_ena) begin
                 store_mask_vec <= { store_mask_shift_data, store_mask_vec[NR_SIGNALS*3-1:1] };
@@ -80,11 +73,12 @@ module icetap_scan
             store_mask_vec  <= {(NR_SIGNALS*3){1'b0}};
         end
     end
+    endgenerate
 
     //============================================================
     // TRIGGER_MASK
     //============================================================
-    if (COMPLEX_TRIGGER == 1) begin
+    generate if (COMPLEX_TRIGGER == 1) begin
         always @(posedge scan_clk) begin
             if (trigger_mask_shift_ena) begin
                 trigger_mask_vec <= { trigger_mask_shift_data, trigger_mask_vec[NR_SIGNALS*3-1:1] };
@@ -96,6 +90,7 @@ module icetap_scan
             trigger_mask_vec <= {(NR_SIGNALS*3){1'b0}};
         end
     end
+    endgenerate
 
     //============================================================
     // CMD
@@ -127,7 +122,7 @@ module icetap_scan
             status_bit_cntr <= 1;
         end
         else if (status_shift_ena) begin
-            status_bit_cntr     <= status_bit_cntr + 1;
+            status_bit_cntr     <= status_bit_cntr + 1'b1;
             if (status_bit_cntr[2:0] != 0) begin
                 status_scan_reg <= { 1'b0, status_scan_reg[7:1] };
             end
@@ -139,7 +134,7 @@ module icetap_scan
                                    (status_bit_cntr[5:3] == 5) ? status_vec[47:40] : 
                                    (status_bit_cntr[5:3] == 6) ? status_vec[55:48] : 
                                    (status_bit_cntr[5:3] == 7) ? status_vec[63:56] : 
-                                                                 0;
+                                                                 8'd0;
             end
         end
 
@@ -162,16 +157,16 @@ module icetap_scan
 
     assign read_req_first = data_shift_update;
 
-    reg read_req_next;
     always @(*) begin
-        read_req_next  = 1'b0;
+        read_req_next     = 1'b0;
+        data_bit_cntr_nxt = data_bit_cntr;
 
         if (data_shift_update) begin
             data_bit_cntr_nxt  = 0;
         end
         else if (data_shift_ena) begin
             if (data_bit_cntr != NR_SIGNALS-1) begin
-                data_bit_cntr_nxt  = data_bit_cntr + 1;
+                data_bit_cntr_nxt  = data_bit_cntr + 1'b1;
             end
             else begin
                 data_bit_cntr_nxt  = 0;
@@ -184,7 +179,6 @@ module icetap_scan
         data_bit_cntr       <= data_bit_cntr_nxt;
     end
 
-    wire data_shift_data;
     assign data_shift_data = data_vec[data_bit_cntr];
     
     // SRC_CLK clock domain
@@ -228,7 +222,7 @@ module icetap_scan
     end
 
     wire state_idle_sync;
-    sync_dd_c u_sync_state_idle[1:0] ( .clk(scan_clk), .reset_(scan_reset_), .sync_in(state_idle), .sync_out(state_idle_sync));
+    sync_dd_c u_sync_state_idle( .clk(scan_clk), .reset_(scan_reset_), .sync_in(state_idle), .sync_out(state_idle_sync));
 
 endmodule
 

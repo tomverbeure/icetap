@@ -2,16 +2,14 @@
 `default_nettype none
 
 module sync_dd_c(
-	input 	clk,
-	input 	reset_, 
-	input 	sync_in, 
-	output	sync_out
+	input 	wire    clk,
+	input 	wire    reset_, 
+	input 	wire    sync_in, 
+	output	wire    sync_out
 	);
 
-	wire	sync_in;
-	reg	sync_in_p1;
-	reg	sync_in_p2;
-	wire	sync_out;
+	reg	    sync_in_p1;
+	reg	    sync_in_p2;
 
 	always @(posedge clk)
 	begin
