@@ -128,8 +128,8 @@ module icetap_jtag_regs
     // DATA
     always @* begin
         if (extest_ir && scan_n == `JTAG_REG_DATA) begin
+            data_shift_update  = capture_dr;
             data_shift_ena     = shift_dr;
-            data_shift_update  = update_dr;
         end
         else begin
             data_shift_ena     = 1'b0;

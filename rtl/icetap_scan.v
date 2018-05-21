@@ -61,8 +61,6 @@ module icetap_scan
     wire src_clk;
     wire src_reset_;
 
-    reg     data_shift_data;
-    reg     signals_out_req;
 
     reg [NR_SIGNALS*3-1:0]      store_mask_vec;
     reg [NR_SIGNALS*3-1:0]      trigger_mask_vec;
@@ -157,49 +155,37 @@ module icetap_scan
     // DATA
     //============================================================
 
-`ifdef BLAH
-    localparam NR_DATA_BYTES = (NR_SIGNALS+7)/8;
-    wire [NR_DATA_BYTES*8-1:0] data_vec;
+    wire [NR_SIGNALS-1:0] data_vec;
     assign data_vec = read_data;
 
-    localparam DATA_BIT_CNTR_BITS = $clog2(NR_DATA_BYTES*8);
-
-    reg [DATA_BIT_CNTR_BITS-1:0] data_bit_cntr, data_bit_cntr_nxt;
-
-    integer i;
-    reg [7:0] data_scan_reg, data_scan_reg_nxt;
-    always @(*) begin
-        data_scan_reg_nxt = read_data;
-        
-        for(i=1;i<NR_DATA_BYTES;i=i+1) begin
-            if (data_bit_cntr[DATA_BIT_CNTR_BITS-1:3] == i) begin
-                data_scan_reg_nxt = data_vec[i*8+7:i*8];
-            end
-        end
-    end
+    reg [$clog2(NR_SIGNALS)-1:0] data_bit_cntr, data_bit_cntr_nxt;
 
     assign read_req_first = data_shift_update;
 
     reg read_req_next;
-    reg data_scan_reg_update;
     always @(*) begin
-        read_req_next <= 1'b0;
-        data_scan_reg_update <= 1'b0;
+        read_req_next  = 1'b0;
 
         if (data_shift_update) begin
-            data_bit_cntr_nxt <= 0;
+            data_bit_cntr_nxt  = 0;
         end
         else if (data_shift_ena) begin
-            if (data_bit_cntr[DATA_BIT_CNTR_BITS-1:3] != NR_DATA_BYTES) begin
-                data_bit_cntr_nxt <= data_bit_cntr + 1;
+            if (data_bit_cntr != NR_SIGNALS-1) begin
+                data_bit_cntr_nxt  = data_bit_cntr + 1;
             end
             else begin
-                data_bit_cntr_nxt <= 0;
-                read_req_next <= 1'b1;
+                data_bit_cntr_nxt  = 0;
+                read_req_next  = 1'b1;
             end
         end
     end
-`endif
+
+    always @(posedge scan_clk) begin
+        data_bit_cntr       <= data_bit_cntr_nxt;
+    end
+
+    wire data_shift_data;
+    assign data_shift_data = data_vec[data_bit_cntr];
     
     // SRC_CLK clock domain
 

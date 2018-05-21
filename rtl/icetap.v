@@ -140,7 +140,7 @@ module icetap_bram
 
                 if (trigger) begin
                     trigger_addr_nxt  = store_addr; 
-                    stop_addr_nxt     = store_addr - RECORD_DEPTH/2;
+                    stop_addr_nxt     = store_addr - RECORD_DEPTH/2 -1;
 
                     nxt_state               = FSM_POST_TRIGGER;
                 end
@@ -148,7 +148,7 @@ module icetap_bram
             FSM_POST_TRIGGER: begin
                 recording   = 1'b1;
 
-                if (store_addr == stop_addr) begin
+                if (store_trigger && store_addr == stop_addr) begin
                     nxt_state           = FSM_IDLE;
                 end
             end
@@ -185,9 +185,9 @@ module icetap_bram
 
         if (!src_reset_) begin
             cur_state       <= FSM_IDLE;
-            start_addr  <= 0;
+            start_addr      <= 0;
             trigger_addr    <= 0;
-            stop_addr   <= 0;
+            stop_addr       <= 0;
         end 
     end
 

@@ -195,6 +195,7 @@ module icetap_top_jtag #(
 
             .signals_in                             (signals_in),
 
+            .scan_clk                               (scan_clk),
             .read_req_first                         (read_req_first),
             .read_req_next                          (read_req_next),
             .read_data                              (read_data)

@@ -23,7 +23,7 @@ module icetap_tb();
         repeat(10) @(posedge clk);
         reset_  = 1;
 
-        repeat(10000) @(posedge clk);
+        repeat(100000) @(posedge clk);
         $display("%t: Simulation complete...", $time);
         $finish;
     end
@@ -106,7 +106,10 @@ module icetap_tb();
     reg [$clog2(RECORD_DEPTH)-1:0]  status_trigger_addr;
     reg [$clog2(RECORD_DEPTH)-1:0]  status_start_addr;
 
+    reg [NR_SIGNALS-1:0] data_mem [0:RECORD_DEPTH-1];
+
     integer i;
+    integer data_mem_addr;
 
     initial begin
         tck     = 0;
@@ -200,12 +203,52 @@ module icetap_tb();
             $display("stop_addr   : %08x", status_stop_addr);
         end 
 
+        //============================================================
+        // Scan out contents of RAM
+        //============================================================
+        $display("Fetching data");
+        jtag_set_scan_n(`JTAG_REG_DATA);
+        jtag_scan_ir(`EXTEST);
+
+        // The whole ram is shifted out in 1 large operation, and CAPTURE_DR resets the points back to 0.
+        // So we can't use jtag_scan_dr because that has a limited vector length.
+
+        // Go to Select-DR-Scan
+        jtag_apply_tms(1);
+
+        // Go to CAPTURE_DR
+        jtag_apply_tms(0);
+
+        // Go to EXIT 1 DR
+        // Don't go directly from CAPTURE_DR to SHIFT_DIR, because we need a clock cycle to resolve an X.
+        jtag_apply_tms(1);
+
+        // Go to PAUSE DR
+        jtag_apply_tms(0);
+
+        // Go to EXIT 2 DR
+        jtag_apply_tms(1);
+
+        // Go to SHIFT_DR
+        jtag_apply_tms(0);
+
+        max_tdo_bit_cntr = NR_SIGNALS;
+
+        for(data_mem_addr=0;data_mem_addr<RECORD_DEPTH;data_mem_addr=data_mem_addr+1) begin
+            jtag_scan_vector('h0, NR_SIGNALS, 0);
+            data_mem[data_mem_addr] = captured_tdo_vec[NR_SIGNALS-1:0];
+            $display("addr %08x: %08x", data_mem_addr, captured_tdo_vec[NR_SIGNALS-1:0]);
+        end
+
+        max_tdo_bit_cntr = MAX_TDO_VEC;
 
         repeat(10000) @(posedge clk);
         $finish;
 
     end
 
+
+    integer max_tdo_bit_cntr = MAX_TDO_VEC;
 
     reg [MAX_TDO_VEC-1:0]   captured_tdo_vec;
     initial begin: CAPTURE_TDO
@@ -220,6 +263,8 @@ module icetap_tb();
             while(tdo_oe) begin
                 captured_tdo_vec[bit_cntr] = tdo;
                 bit_cntr = bit_cntr + 1;
+                if (bit_cntr == max_tdo_bit_cntr)
+                    bit_cntr = 0;
                 @(posedge tck);
             end
             $display("%t: TDO_CAPTURED: %b", $time, captured_tdo_vec);
