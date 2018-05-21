@@ -5,12 +5,10 @@ module top (
     input       osc_clk,
 
     input       button1,
-    input       button2,
 
     output      led1,
     output      led2,
     output      led3,
-    output      led4,
 
     input       tck,
     input       tms,
@@ -24,7 +22,6 @@ module top (
     assign led1 = count[25];
     assign led2 = count[24];
     assign led3 = count[23];
-    assign led4 = count[22];
 
     assign clk = osc_clk;
 

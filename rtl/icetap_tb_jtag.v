@@ -278,12 +278,10 @@ module icetap_tb();
         .osc_clk(clk),
 
         .button1(1'b0),
-        .button2(1'b0),
 
         .led1(),
         .led2(),
         .led3(),
-        .led4(),
 
         .tck(1'b1),
         .tms(1'b1),
