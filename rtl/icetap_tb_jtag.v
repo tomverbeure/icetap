@@ -31,7 +31,8 @@ module icetap_tb();
     wire uart_rx;
     wire uart_tx;
 
-    localparam NR_SIGNALS = 16;
+    localparam NR_SIGNALS   = 16;
+    localparam RECORD_DEPTH = 512;
 
     reg [NR_SIGNALS-1:0]    signals_in;
 
@@ -54,7 +55,8 @@ module icetap_tb();
 
     jtag_icetap
     #(
-     .NR_SIGNALS(NR_SIGNALS) 
+        .NR_SIGNALS(NR_SIGNALS),
+        .RECORD_DEPTH(RECORD_DEPTH)
     ) 
     u_jtag_icetap
     (
@@ -97,6 +99,12 @@ module icetap_tb();
 
     reg [NR_SIGNALS*3-1:0] trigger_mask;
     reg [NR_SIGNALS-1:0]   trigger_value;
+
+    reg                             status_state_idle;
+    reg [1:0]                       status_state;
+    reg [$clog2(RECORD_DEPTH)-1:0]  status_stop_addr;
+    reg [$clog2(RECORD_DEPTH)-1:0]  status_trigger_addr;
+    reg [$clog2(RECORD_DEPTH)-1:0]  status_start_addr;
 
     integer i;
 
@@ -175,6 +183,24 @@ module icetap_tb();
         jtag_scan_dr(3'h1, 3, 1);
         jtag_spin_run_test_idle(10);    // Spin cycles to make sure command gets through synchronizer
 
+        //============================================================
+        // Wait until idle
+        //============================================================
+        $display("status polling");
+        jtag_set_scan_n(`JTAG_REG_STATUS);
+        jtag_scan_ir(`EXTEST);
+
+        status_state_idle = 0;
+        while (status_state_idle != 1) begin
+            jtag_scan_dr(64'h0, 64, 1);
+            { status_start_addr, status_trigger_addr, status_stop_addr, status_state, status_state_idle } = captured_tdo_vec;
+            $display("Status: %d", status_state);
+            $display("start_addr  : %08x", status_start_addr);
+            $display("trigger_addr: %08x", status_trigger_addr);
+            $display("stop_addr   : %08x", status_stop_addr);
+        end 
+
+
         repeat(10000) @(posedge clk);
         $finish;
 
@@ -183,7 +209,7 @@ module icetap_tb();
 
     reg [MAX_TDO_VEC-1:0]   captured_tdo_vec;
     initial begin: CAPTURE_TDO
-        integer                 bit_cntr;
+        integer bit_cntr;
 
         forever begin
             while(!tdo_oe) begin
@@ -205,41 +231,3 @@ module icetap_tb();
 
 endmodule
 
-`ifdef BLAH
-    reg [7:0] miso_byte;
-
-    initial begin
-        spi_ss_     <= 1'b1;
-        spi_clk     <= 1'b0;
-        spi_mosi    <= 1'b0;
-        @(posedge reset_);
-
-        repeat(100) @(posedge clk);
-
-        repeat(5) begin
-            $display("--- Status");
-            spi_xfer_start;
-            spi_xfer_data(8'h01, miso_byte);
-            spi_xfer_data(8'h00, miso_byte);
-            $display("%02x", miso_byte);
-            spi_xfer_data(8'h00, miso_byte);
-            $display("%02x", miso_byte);
-            spi_xfer_data(8'h00, miso_byte);
-            $display("%02x", miso_byte);
-            spi_xfer_data(8'h00, miso_byte);
-            $display("%02x", miso_byte);
-            spi_xfer_end;
-        end
-
-        $display("--- Data");
-        spi_xfer_start;
-        spi_xfer_data(8'h02, miso_byte);
-        repeat(16) begin
-            spi_xfer_data(8'h00, miso_byte);
-            $display("%02x", miso_byte);
-        end
-
-        repeat(1000) @(posedge clk);
-        $finish;
-    end
-`endif

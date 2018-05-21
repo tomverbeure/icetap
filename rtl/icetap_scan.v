@@ -6,7 +6,7 @@
 module icetap_scan 
     #(
         parameter NR_SIGNALS            = 16,
-        parameter RECORD_DEPTH      = 256,
+        parameter RECORD_DEPTH          = 256,
         parameter COMPLEX_STORE         = 1,
         parameter COMPLEX_TRIGGER       = 1
     ) (
@@ -118,7 +118,7 @@ module icetap_scan
     // STATUS
     //============================================================
     wire [63:0] status_vec;
-    assign status_vec = { start_addr, trigger_addr, stop_addr, state };
+    assign status_vec = { start_addr, trigger_addr, stop_addr, state, state_idle_sync };
 
     reg [7:0] status_scan_reg;      // Capture in chunks of 8 bits to reduce the amount of FFs.
     reg [5:0] status_bit_cntr;
@@ -131,12 +131,17 @@ module icetap_scan
         else if (status_shift_ena) begin
             status_bit_cntr     <= status_bit_cntr + 1;
             if (status_bit_cntr[2:0] != 0) begin
-                status_scan_reg <= { status_scan_reg[6:0], 1'b0 };
+                status_scan_reg <= { 1'b0, status_scan_reg[7:1] };
             end
             else begin
                 status_scan_reg <= (status_bit_cntr[5:3] == 1) ? status_vec[15:8]  : 
-                                   (status_bit_cntr[5:3] == 2) ? status_vec[31:16] : 
-                                   (status_bit_cntr[5:3] == 3) ? status_vec[47:32] : 0;
+                                   (status_bit_cntr[5:3] == 2) ? status_vec[23:16] : 
+                                   (status_bit_cntr[5:3] == 3) ? status_vec[31:24] : 
+                                   (status_bit_cntr[5:3] == 4) ? status_vec[39:32] : 
+                                   (status_bit_cntr[5:3] == 5) ? status_vec[47:40] : 
+                                   (status_bit_cntr[5:3] == 6) ? status_vec[55:48] : 
+                                   (status_bit_cntr[5:3] == 7) ? status_vec[63:56] : 
+                                                                 0;
             end
         end
 
@@ -146,7 +151,7 @@ module icetap_scan
         end
     end
 
-    assign status_shift_data = status_scan_reg[7];
+    assign status_shift_data = status_scan_reg[0];
 
     //============================================================
     // DATA
@@ -196,7 +201,6 @@ module icetap_scan
     end
 `endif
     
-
     // SRC_CLK clock domain
 
     wire cmd_update_sync;
@@ -232,8 +236,13 @@ module icetap_scan
     assign store_always   = cmd_reg_sync[1];
     assign trigger_always = cmd_reg_sync[2];
 
-    wire [1:0]  state_sync;
-    sync_dd_c u_sync_state[1:0] ( .clk(scan_clk), .reset_(scan_reset_), .sync_in(state), .sync_out(state_sync));
+    reg state_idle;
+    always @(posedge src_clk) begin
+        state_idle  <= (state == 0);
+    end
+
+    wire state_idle_sync;
+    sync_dd_c u_sync_state_idle[1:0] ( .clk(scan_clk), .reset_(scan_reset_), .sync_in(state_idle), .sync_out(state_idle_sync));
 
 endmodule
 

@@ -4,7 +4,8 @@
 `default_nettype none
 
 module jtag_icetap #(
-        parameter NR_SIGNALS = 1
+        parameter NR_SIGNALS    = 1,
+        parameter RECORD_DEPTH  = 256
     ) 
     (
         input   wire        clk,
@@ -86,7 +87,8 @@ module jtag_icetap #(
     wire icetap_tdo;
 
     icetap_top_jtag #(
-        .NR_SIGNALS(NR_SIGNALS)
+        .NR_SIGNALS(NR_SIGNALS),
+        .RECORD_DEPTH(RECORD_DEPTH)
     )
     u_icetap_top_jtag (
         .tck                (tck),

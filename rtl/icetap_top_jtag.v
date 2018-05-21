@@ -17,8 +17,8 @@
 `default_nettype none
 
 module icetap_top_jtag #(
-        parameter NR_SIGNALS            = 16,
-        parameter RECORD_DEPTH          = 256,
+        parameter NR_SIGNALS            = 4,
+        parameter RECORD_DEPTH          = 4,
         parameter COMPLEX_STORE         = 1,
         parameter COMPLEX_TRIGGER       = 1
     ) (
@@ -118,6 +118,7 @@ module icetap_top_jtag #(
         icetap_scan 
         #(
             .NR_SIGNALS                             (NR_SIGNALS),
+            .RECORD_DEPTH                           (RECORD_DEPTH),
             .COMPLEX_STORE                          (COMPLEX_STORE),
             .COMPLEX_TRIGGER                        (COMPLEX_TRIGGER)
         )
