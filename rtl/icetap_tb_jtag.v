@@ -95,6 +95,11 @@ module icetap_tb();
         end
     endtask
 
+    reg [23:0] trigger_mask;
+    reg [7:0]  trigger_value;
+
+    integer i;
+
     initial begin
         tck     = 0;
         tdi     = 0;
@@ -153,7 +158,13 @@ module icetap_tb();
         $display("trigger-mask");
         jtag_set_scan_n(`JTAG_REG_TRIGGER_MASK);
         jtag_scan_ir(`EXTEST);
-        jtag_scan_dr(24'h000048, 24, 0);
+
+        trigger_value = 8'h80;
+        trigger_mask = 0;
+        for(i=0;i<8;++i) begin
+            trigger_mask = trigger_mask | (trigger_value[i] ? 3'd1 : 3'd2) << (i*3);
+        end
+        jtag_scan_dr(trigger_mask, 24, 0);
 
         //============================================================
         // Start!
