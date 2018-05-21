@@ -57,7 +57,7 @@ module icetap_tb();
     #(
         .NR_SIGNALS(NR_SIGNALS),
         .RECORD_DEPTH(RECORD_DEPTH)
-    ) 
+    )
     u_jtag_icetap
     (
         .tck                (tck),
@@ -201,7 +201,7 @@ module icetap_tb();
             $display("start_addr  : %08x", status_start_addr);
             $display("trigger_addr: %08x", status_trigger_addr);
             $display("stop_addr   : %08x", status_stop_addr);
-        end 
+        end
 
         //============================================================
         // Scan out contents of RAM
@@ -272,7 +272,25 @@ module icetap_tb();
         end
     end
 
+`ifndef TOP
+    // This doesn't really belong here...
+    top u_top(
+        .osc_clk(clk),
 
+        .button1(1'b0),
+        .button2(1'b0),
+
+        .led1(),
+        .led2(),
+        .led3(),
+        .led4(),
+
+        .tck(1'b1),
+        .tms(1'b1),
+        .tdi(1'b1),
+        .tdo()
+    );
+`endif
 
 endmodule
 

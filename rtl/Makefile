@@ -4,7 +4,7 @@ ICETAP_SPI_DESIGN_FILES  = icetap_spi.v icetap_top_spi.v
 ICETAP_JTAG_DESIGN_FILES = jtag_icetap.v icetap_top_jtag.v icetap_jtag_regs.v jtag_tap_generic.v
 
 ICETAP_SPI_TB_FILES	    = icetap_tb_spi.v uart_tx.v
-ICETAP_JTAG_TB_FILES	= icetap_tb_jtag.v uart_tx.v
+ICETAP_JTAG_TB_FILES	= icetap_tb_jtag.v uart_tx.v top.v
 
 ICETAP_FILES = $(ICETAP_SHARED_DESIGN_FILES) $(ICETAP_JTAG_DESIGN_FILES) $(ICETAP_JTAG_TB_FILES)
 
