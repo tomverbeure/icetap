@@ -1,22 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.90 (w)1999-2018 BSI
-[*] Mon May 21 02:35:18 2018
+[*] Mon May 21 02:43:23 2018
 [*]
 [dumpfile] "/home/tom/projects/icetap/rtl/output/waves.vcd"
-[dumpfile_mtime] "Mon May 21 02:33:51 2018"
-[dumpfile_size] 361673
+[dumpfile_mtime] "Mon May 21 02:43:13 2018"
+[dumpfile_size] 2086239
 [savefile] "/home/tom/projects/icetap/rtl/waves.gtkw"
-[timestart] 20022000
+[timestart] 0
 [size] 1655 971
 [pos] -1 -1
-*-20.721867 26985000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-25.619162 71785000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] icetap_tb.
 [treeopen] icetap_tb.u_jtag_icetap.
 [treeopen] icetap_tb.u_jtag_icetap.u_icetap_top_jtag.
 [sst_width] 384
 [signals_width] 374
 [sst_expanded] 1
-[sst_vpaned_height] 285
+[sst_vpaned_height] 286
 @28
 icetap_tb.trst_
 icetap_tb.tck
@@ -53,14 +53,14 @@ icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.extest_ir
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.store_mask_shift_data
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.store_mask_shift_ena
 @22
-icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.store_mask_vec[23:0]
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.store_mask_vec[47:0]
 @200
 -
 @28
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.trigger_mask_shift_data
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_jtag_regs.trigger_mask_shift_ena
 @22
-icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.trigger_mask_vec[23:0]
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.trigger_mask_vec[47:0]
 @200
 -
 @28
@@ -79,16 +79,19 @@ icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.trigger_always
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_scan.store_always
 @820
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.cur_state_txt[127:0]
+@200
+-
 @22
-icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.signals_in[7:0]
-icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.signals_in_p1[7:0]
+icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.signals_in[15:0]
+@200
+-
 @28
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.trigger
 @22
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.start_addr[7:0]
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.trigger_addr[7:0]
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.stop_addr[7:0]
-@201
+@200
 -
 @22
 icetap_tb.u_jtag_icetap.u_icetap_top_jtag.u_icetap_bram.store_addr[7:0]

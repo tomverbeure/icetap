@@ -31,7 +31,7 @@ module icetap_tb();
     wire uart_rx;
     wire uart_tx;
 
-    localparam NR_SIGNALS = 8;
+    localparam NR_SIGNALS = 16;
 
     reg [NR_SIGNALS-1:0]    signals_in;
 
@@ -95,8 +95,8 @@ module icetap_tb();
         end
     endtask
 
-    reg [23:0] trigger_mask;
-    reg [7:0]  trigger_value;
+    reg [NR_SIGNALS*3-1:0] trigger_mask;
+    reg [NR_SIGNALS-1:0]   trigger_value;
 
     integer i;
 
@@ -150,7 +150,7 @@ module icetap_tb();
         $display("store-mask");
         jtag_set_scan_n(`JTAG_REG_STORE_MASK);
         jtag_scan_ir(`EXTEST);
-        jtag_scan_dr(24'h000001, 24, 0);
+        jtag_scan_dr('h01, NR_SIGNALS * 3, 0);
 
         //============================================================
         // TRIGGER_MASK
@@ -159,12 +159,12 @@ module icetap_tb();
         jtag_set_scan_n(`JTAG_REG_TRIGGER_MASK);
         jtag_scan_ir(`EXTEST);
 
-        trigger_value = 8'h80;
+        trigger_value = 'h1c00;
         trigger_mask = 0;
-        for(i=0;i<8;++i) begin
+        for(i=0;i<NR_SIGNALS;++i) begin
             trigger_mask = trigger_mask | (trigger_value[i] ? 3'd1 : 3'd2) << (i*3);
         end
-        jtag_scan_dr(trigger_mask, 24, 0);
+        jtag_scan_dr(trigger_mask, NR_SIGNALS * 3, 0);
 
         //============================================================
         // Start!
@@ -175,7 +175,7 @@ module icetap_tb();
         jtag_scan_dr(3'h1, 3, 1);
         jtag_spin_run_test_idle(10);    // Spin cycles to make sure command gets through synchronizer
 
-        repeat(100) @(posedge clk);
+        repeat(10000) @(posedge clk);
         $finish;
 
     end
